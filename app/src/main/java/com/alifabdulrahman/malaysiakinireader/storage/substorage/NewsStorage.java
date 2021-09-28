@@ -71,7 +71,7 @@ public class NewsStorage extends storage {
     }
 
     //Save data of articles retrieved
-    public void saveData() {
+    public void saveData(ArrayList<ArticleData>articleDatas) {
         //SharedPreferences xp = getSharedPreferences("ReadNews", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         //SharedPreferences.Editor editor2 = xp.edit();

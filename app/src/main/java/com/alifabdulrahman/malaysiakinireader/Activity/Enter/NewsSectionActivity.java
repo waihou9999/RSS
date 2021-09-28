@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alifabdulrahman.malaysiakinireader.Activity.Enter.ArticleList.ArticleListingActivity;
+import com.alifabdulrahman.malaysiakinireader.Activity.MainActivity.MainActivity;
 import com.alifabdulrahman.malaysiakinireader.Activity.MainActivity.sectionManager;
 import com.alifabdulrahman.malaysiakinireader.R;
 import com.alifabdulrahman.malaysiakinireader.model.NewsSectionData;
@@ -67,6 +68,7 @@ public class NewsSectionActivity extends AppCompatActivity implements Serializab
     public void onResume(){
         super.onResume();
         setupListView();
+
     }
 
     private void setupListView() {
@@ -97,6 +99,7 @@ public class NewsSectionActivity extends AppCompatActivity implements Serializab
                 Intent toNewsListing = new Intent(NewsSectionActivity.this, ArticleListingActivity.class);
                 startActivity(toNewsListing);
                 newsSectionStorage.saveReading(url, newsType, "yes");
+                newsSectionStorage.saveData();
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
@@ -287,7 +290,8 @@ public class NewsSectionActivity extends AppCompatActivity implements Serializab
         finish();
         super.onBackPressed();
         newsSectionStorage.setReading("no");
-        Intent toMain = sectionManager.section(4);
+        //Intent toMain = sectionManager.section(4);
+        Intent toMain = new Intent(this, MainActivity.class);
         startActivity(toMain);
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }

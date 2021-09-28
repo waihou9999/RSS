@@ -123,6 +123,16 @@ public class ArticleData implements Parcelable {
         return hashCode();
     }
 
+    public ArrayList<ArticleData> removeDuplicates(ArrayList<ArticleData> list){
+        ArrayList<ArticleData> newList = new ArrayList<>();
+        for(ArticleData element : list){
+            if(!newList.contains(element)){
+                newList.add(element);
+            }
+        }
+
+        return newList;
+    }
 
 
 

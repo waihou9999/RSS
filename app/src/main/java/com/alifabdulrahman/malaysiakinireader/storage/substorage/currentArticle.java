@@ -20,7 +20,7 @@ public class currentArticle extends storage {
 
     public currentArticle(Context context) {
         super(context);
-        this.sp = context.getSharedPreferences(storageName, MODE_PRIVATE);
+        this.sp = context.getSharedPreferences("currentArticle", MODE_PRIVATE);
         this.editor = sp.edit();
     }
 
@@ -28,6 +28,9 @@ public class currentArticle extends storage {
     public void saveData() {
 
     }
+
+
+    public String loadLastArticle(){return "no";}
 
 
     public String loadNewsType(){
