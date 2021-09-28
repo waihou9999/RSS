@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.Enter.ArticleView.ArticleViewActivity">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/pullToRefresh2">
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="-4dp">
+
+        </WebView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp">
+<!--
+        <-ImageButton
+            android:id="@+id/pausebtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_pause" />
+-->
+
+        <ImageButton
+            android:id="@+id/sharebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_2"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_share" />
+
+        <!--
+        <ImageButton
+            android:id="@+id/reloadbutton"
+            android:layout_width="42dp"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/stat_notify_sync" />
+-->
+
+        <ImageButton
+            android:id="@+id/prevarcbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_previous" />
+
+        <ImageButton
+            android:id="@+id/prevbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_rew" />
+
+        <ImageButton
+            android:id="@+id/stopbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_play" />
+
+        <ImageButton
+            android:id="@+id/forwbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_ff" />
+
+        <ImageButton
+            android:id="@+id/nxtarcbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/layout"
+            android:layout_alignBottom="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_1"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_media_next" />
+
+        <ImageButton
+            android:id="@+id/rescrapebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/layout"
+            android:layout_margin="3dp"
+            android:adjustViewBounds="false"
+            android:background="@drawable/round_corner_2"
+            android:cropToPadding="false"
+            android:padding="5dp"
+            android:src="@android:drawable/ic_menu_rotate" />
+
+    </LinearLayout>
+
+</RelativeLayout>

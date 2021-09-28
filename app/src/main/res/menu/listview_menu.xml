@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activity.ArticleListingActivity">
+
+    <item
+        android:id="@+id/refresh"
+        android:title="Refresh" >
+
+        <menu>
+            <group
+                android:id="@+id/refreshtimeinterval"
+                android:checkableBehavior="single">
+                <item android:id="@+id/minute" android:title="Every minute" />
+                <item android:id="@+id/hour" android:title="Every hour" />
+                <item android:id="@+id/day" android:title="Every day" />
+            </group>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/orderListView"
+        android:title="Sort Articles" >
+
+        <menu>
+            <group
+                android:id="@+id/singleselection"
+                android:checkableBehavior="single">
+                <item android:id="@+id/latest" android:title="Latest" />
+                <item android:id="@+id/oldest" android:title="Oldest" />
+            </group>
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/clearread"
+        android:title="Clear read news"/>
+
+    <item
+        android:id="@+id/reset"
+        android:title="Reset news feed"/>
+
+</menu>

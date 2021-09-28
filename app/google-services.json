@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1039949801554",
+    "project_id": "protot-232118",
+    "storage_bucket": "protot-232118.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039949801554:android:cc9fb24c0a7672750c978b",
+        "android_client_info": {
+          "package_name": "com.alifabdulrahman.malaysiakinireader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039949801554-9200rsda12g3abcjpmb4669ncg3kgd38.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCF40KRyLQSLiG0F3maFUCOty8_XFaIuU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039949801554-9200rsda12g3abcjpmb4669ncg3kgd38.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
