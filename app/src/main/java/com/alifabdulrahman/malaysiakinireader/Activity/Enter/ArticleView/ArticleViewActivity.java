@@ -25,6 +25,10 @@ import android.widget.Toast;
 
 import com.alifabdulrahman.malaysiakinireader.model.ArticleData;
 import com.alifabdulrahman.malaysiakinireader.R;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.NewsStorage;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.newsSectionStorage;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.settings;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.currentArticle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
@@ -38,6 +42,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.lang.reflect.Type;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,6 +71,10 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
     int starbigon_ = android.R.drawable.ic_media_pause;
     boolean startTTS = false;
     String wasReading = "";
+    private NewsStorage newsStorage;
+    private newsSectionStorage newsSectionStorage;
+    private settings settings;
+    private currentArticle currentArticle;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -98,14 +107,31 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
 
         //Get clicked article from NewsListing
 //        loadSettings();
-        orderLatest = getIntent().getExtras().getBoolean("OrderLatest");
-        newsType = getIntent().getExtras().getString("NewsType");
+       // orderLatest = getIntent().getExtras().getBoolean("OrderLatest");
+       // newsType = getIntent().getExtras().getString("NewsType");
         index = getIntent().getExtras().getInt("index");
-        startTTS = getIntent().getExtras().getBoolean("startTTS");
+        //startTTS = getIntent().getExtras().getBoolean("startTTS");
+        startTTS = false;
 
         //System.out.println("index is " + orderLatest + newsType + index);
 
-        loadData();
+
+        newsSectionStorage = new newsSectionStorage(this);
+        newsType = newsSectionStorage.getNewsSectionType();
+        settings = new settings(this);
+        currentArticle = new currentArticle(this);
+        newsStorage = new NewsStorage(this, newsType);
+        orderLatest = settings.loadSettings(newsType);
+
+
+
+        newsStorage.loadData();
+
+        articleDatas = newsStorage.loadArt1();
+
+        if (articleDatas.isEmpty()) {
+            articleDatas = new ArrayList<>();
+        }
 
 
         //set to read from first sentence
@@ -117,9 +143,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         saveReading();
 
         //Get the url to display an set up webview
-        if (articleDatas != null) {
-            url = articleDatas.get(index).getLink();
-        }
+
+            //url = articleDatas.get(index).getLink();
+        url = currentArticle.loadData();
+        System.out.println("whaturl" + url);
+
+
         mWebView = findViewById(R.id.webview);
         mWebView.getSettings().setJavaScriptEnabled(true);
 
@@ -130,7 +159,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             } else {
                 initializeTTS();
                 stopPlay();
-               // readFreeOrPaid();
+                readFreeOrPaid();
             }
             //The key argument here must match that used in the other activity
         //}
@@ -377,7 +406,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             //Elements contentContainer = doc.select("div[class$=content-container]");
             //Elements contentContainer = doc.select("script[id$=__NEXT_DATA__]");
             //Elements classContents =  contentContainer.select("div[class$=content]");
-            Elements classContents =  doc.select("#full-content-container");
+            Elements classContents =  doc.select("div[id $= full-content-container]");
             Elements contents = classContents.select("p");
             for(Element content : contents){
                 if(!(content.text().equals(""))){

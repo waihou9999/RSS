@@ -61,6 +61,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     private NewsStorage newsStorage;
     private sorting sorting;
     private settings settings;
+    private currentArticle currentArticle;
     //private boolean readContentAvailable;
 
     @SuppressLint({"WrongViewCast", "WrongThread"})
@@ -79,11 +80,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         newsSectionURL = newsSectionStorage.getSectionURL();
         newsType = newsSectionStorage.getNewsSectionType();
 
-        System.out.println("BIBI" + newsSectionStorage + newsType);
 
         newsStorage = new NewsStorage(this, newsType);
 
         newsStorage.loadData();
+        orderLatest = newsStorage.isOrderLatest();
 
         articleDatas = newsStorage.loadArt1();
 
@@ -135,9 +136,14 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                currentArticle = new currentArticle(ArticleListingActivity.this);
+                String link = articleDatas.get(i).getLink();
+                currentArticle.saveData(link);
+
                 boolean checker = true;
                 Intent toView = new Intent(ArticleListingActivity.this, ArticleViewActivity.class);
 
+                toView.putExtra("index", i);
                 articleDatas.get(i).setReadNews(true);
 
                 newsStorage.saveData();

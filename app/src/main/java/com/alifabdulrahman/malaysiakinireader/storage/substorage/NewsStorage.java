@@ -35,10 +35,12 @@ public class NewsStorage extends storage {
     }
 
 
+    public boolean isOrderLatest() {
+        return orderLatest;
+    }
+
     //Load data of articles
     public void loadData() {
-        newsType = newsSectionStorage.getNewsSectionType();
-
         Gson gson = new Gson();
         Gson xson = new Gson();
         String json = sp.getString(newsType, null);
