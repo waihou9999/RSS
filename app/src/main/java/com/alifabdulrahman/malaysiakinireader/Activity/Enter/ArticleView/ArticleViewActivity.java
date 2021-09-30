@@ -169,6 +169,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onRefresh() {
                 mWebView.loadUrl(url);
+                System.out.println("webload1");
                 pullToRefresh2.setRefreshing(false);
             }
         });
@@ -353,7 +354,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 }
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-                System.out.println("load1");
+                System.out.println("webload2");
 
                 String cookies = CookieManager.getInstance().getCookie(url);
                 //System.out.println( "All the cookies in a string:" + cookies);
@@ -361,6 +362,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         });
 
         mWebView.loadUrl(url);
+        System.out.println("webload3");
     }
 
     private void reloadWebView() {
@@ -369,13 +371,15 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
         }
-        mWebView.addJavascriptInterface(new GetHTML(this), "Scrap");
+        //mWebView.addJavascriptInterface(new GetHTML(this), "Scrap");
+        System.out.println("webload4");
         mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                 "(document.getElementsByTagName('html')[0].outerHTML);");
-        System.out.println("load2");
+        System.out.println("webload5");
         //readIndex = 0;
         //pausePlay();
     }
+
 
 
     //Get the HTML loaded from webview and scrap it to get the article contents
@@ -389,7 +393,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         @JavascriptInterface
         public Object getHTML(String html){
             System.out.println("GETHTMLWORKSSS");
-            System.out.println("load3");
+            System.out.println("webload6");
             //Basically the same thing as in ArticleListingActivity GetContents
             Document doc = Jsoup.parse(html);
 

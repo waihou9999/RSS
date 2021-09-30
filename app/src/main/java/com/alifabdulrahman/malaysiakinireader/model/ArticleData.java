@@ -65,7 +65,7 @@ public class ArticleData implements Parcelable {
 
     @Override
     public String toString(){
-        return this.title + this.contentSentence;
+        return this.getTitle() + readNews;
     }
 
     @Override

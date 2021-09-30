@@ -101,6 +101,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         }
 
 
+        System.out.println(articleDatas);
+
+
+
+
         // loadReading();
 
         //Implement pull to refresh
@@ -146,7 +151,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 toView.putExtra("index", i);
                 articleDatas.get(i).setReadNews(true);
 
-                newsStorage.saveData();
+                newsStorage.saveData(articleDatas);
                 startActivity(toView);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -425,7 +430,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
 
             //Display
-            //checkReadStuff();
+            checkReadStuff();
             setupListView();
         }
     }
@@ -508,7 +513,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             //if (articleDatas2 == null) System.out.println("null");
             //if ((articleDatas2 != null) && (!articleDatas2.isEmpty())) System.out.println(articleDatas.size() + "|" + articleDatas2.size());
 
-            //checkReadStuff();
+            checkReadStuff();
             setupListView();
         }
     }
