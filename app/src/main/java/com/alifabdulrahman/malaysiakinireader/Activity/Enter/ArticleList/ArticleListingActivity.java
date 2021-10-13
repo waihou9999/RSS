@@ -128,6 +128,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     public void onResume() {
         super.onResume();
         //newsStorage.loadData();
+        newsStorage.loadData();
+        articleDatas = newsStorage.loadArt1();
         setupListView();
     }
 

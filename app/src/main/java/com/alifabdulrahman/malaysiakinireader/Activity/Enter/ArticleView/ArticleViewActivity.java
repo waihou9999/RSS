@@ -134,19 +134,21 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         }
 
 
+        System.out.println("webload10" + articleDatas);
+
         //set to read from first sentence
         readIndex = 0;
         savedIndex = index;
         savedReadIndex = readIndex;
 
         wasReading = "yes";
-        saveReading();
+        currentArticle.saveReading(wasReading, index);
+        //saveReading();
 
         //Get the url to display an set up webview
 
             //url = articleDatas.get(index).getLink();
         url = currentArticle.loadData();
-        System.out.println("whaturl" + url);
 
 
         mWebView = findViewById(R.id.webview);
@@ -309,7 +311,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
     public void onBackPressed() {
         finish();
         wasReading = "no";
-        saveReading();
+        currentArticle.saveReading(wasReading, index);
+        //saveReading();
         saveData();
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -624,7 +627,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 index++;
                 url = articleDatas.get(index).getLink();
                 articleDatas.get(index).setReadNews(true);
-                saveReading();
+                //saveReading();
+                currentArticle.saveReading(wasReading, index);
                 saveData();
                 readFreeOrPaid();
             }
@@ -639,7 +643,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 index--;
                 url = articleDatas.get(index).getLink();
                 articleDatas.get(index).setReadNews(true);
-                saveReading();
+                //saveReading();
+                currentArticle.saveReading(wasReading, index);
                 saveData();
                 readFreeOrPaid();
             }
@@ -770,6 +775,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         //System.out.println(json);
     }
 
+    /*
     private void saveReading() {
         SharedPreferences sp = getSharedPreferences("currentArticle", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
@@ -779,6 +785,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
 
         editor.apply();
     }
+
+     */
 
     private void loadData(){
         SharedPreferences sp = getSharedPreferences("NewsStorage", MODE_PRIVATE);

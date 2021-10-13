@@ -15,6 +15,12 @@ public class currentArticle extends storage {
         this.editor = sp.edit();
     }
 
+    public void saveReading(String wasReading, int index){
+        editor.putString("wasReading", wasReading);
+        editor.putInt("lastIndex3", index);
+
+        editor.apply();
+    }
 
     public void saveData(String link) {
         editor.putString("lastURL", link);
