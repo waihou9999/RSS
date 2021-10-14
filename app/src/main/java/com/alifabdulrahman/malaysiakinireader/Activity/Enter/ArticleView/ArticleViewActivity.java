@@ -111,7 +111,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
        // newsType = getIntent().getExtras().getString("NewsType");
         index = getIntent().getExtras().getInt("index");
         //startTTS = getIntent().getExtras().getBoolean("startTTS");
-        startTTS = false;
+        startTTS = true;
 
         //System.out.println("index is " + orderLatest + newsType + index);
 
@@ -133,8 +133,10 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             articleDatas = new ArrayList<>();
         }
 
+        System.out.println("wtf" + articleDatas);
 
-        System.out.println("webload10" + articleDatas);
+
+        //System.out.println("webload10" + articleDatas);
 
         //set to read from first sentence
         readIndex = 0;
@@ -355,17 +357,21 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
+                //second load
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-                System.out.println("webload2");
+                System.out.println("webloadfinished");
 
-                String cookies = CookieManager.getInstance().getCookie(url);
+
+                //String cookies = CookieManager.getInstance().getCookie(url);
                 //System.out.println( "All the cookies in a string:" + cookies);
                 }
         });
 
+        //first load
+        System.out.println("beforewebload");
         mWebView.loadUrl(url);
-        System.out.println("webload3");
+        System.out.println("afterwebload");
     }
 
     private void reloadWebView() {
@@ -395,8 +401,9 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
 
         @JavascriptInterface
         public Object getHTML(String html){
-            System.out.println("GETHTMLWORKSSS");
-            System.out.println("webload6");
+            //System.out.println("GETHTMLWORKSSS");
+            //third load
+            System.out.println("at gethtml");
             //Basically the same thing as in ArticleListingActivity GetContents
             Document doc = Jsoup.parse(html);
 
@@ -420,7 +427,6 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                     tempList.add(content.text());
                 }
             }
-            System.out.println("templist100" + tempList);
 
 
             articleDatas.get(index).getContent().clear();
@@ -581,7 +587,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 mWebView.addJavascriptInterface(new GetHTML(this), "Scrap");
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-                System.out.println("load4");
+                System.out.println("weload7");
                 //readIndex = 0;
                 break;
         }
@@ -660,13 +666,14 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 mWebView.addJavascriptInterface(new GetHTML(this), "Scrap");
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-            System.out.println("load5");
+            System.out.println("webload8");
             //}
             //oldsize = newsize;
             //newsize = articleDatas.get(index).getContent().size();
             if(tts.isSpeaking())
                 tts.stop();
             speakSentences(articleDatas.get(index).getContent());
+            System.out.println("wtf" + articleDatas.get(index).getContent());
         }
         else{
             moveArticle(true);

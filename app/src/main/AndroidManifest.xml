@@ -3,8 +3,11 @@
     package="com.alifabdulrahman.malaysiakinireader">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="RSS News Reader"
@@ -13,6 +16,7 @@
         android:theme="@style/AppTheme"
         android:largeHeap="true"
         android:usesCleartextTraffic="true">
+
 
         <activity android:name="com.alifabdulrahman.malaysiakinireader.Activity.Enter.NewsSectionActivity" android:screenOrientation="portrait"/>
         <activity android:name="com.alifabdulrahman.malaysiakinireader.Activity.Help.NewsSectionActivity1" android:screenOrientation="portrait"/>

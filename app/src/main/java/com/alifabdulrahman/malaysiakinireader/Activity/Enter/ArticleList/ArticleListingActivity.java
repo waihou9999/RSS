@@ -2,9 +2,11 @@ package com.alifabdulrahman.malaysiakinireader.Activity.Enter.ArticleList;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
@@ -35,8 +37,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,7 +109,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         }
 
 
-        System.out.println(articleDatas);
+        //System.out.println(articleDatas);
 
 
 
@@ -238,7 +246,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     Log.d("Error", e.getMessage());
                 }
 
-                System.out.println("Local doc: " + localDoc);
+                //System.out.println("Local doc: " + localDoc);
                 //Get authors
                 Elements author = localDoc.select("meta[property='article:author']");
                 String tempAuthor = author.attr("content");
@@ -247,6 +255,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     tempAuthor = "-";
 
                 newArticles.get(i).setAuthor(tempAuthor);
+
 
                 //Get all <p> from HTML
                 Elements contentContainer = localDoc.select("div[id $= full-content-container]");
@@ -275,6 +284,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                         tempList.add(e.text());
                     }
                 }
+
+                System.out.println("here0" + tempList);
 
                 //Pass the temporary array into the articleData
                 newArticles.get(i).setContent(tempList);
@@ -562,9 +573,9 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        switch(item.getItemId()){
+        switch(item.getItemId()) {
             case R.id.latest:
-                if(!orderLatest){
+                if (!orderLatest) {
                     orderLatest = !orderLatest;
                     settings.saveSettings(newsType, orderLatest);
                     articleDatas = sorting.sortByLatest(articleDatas);
@@ -572,7 +583,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 }
                 return true;
             case R.id.oldest:
-                if(orderLatest){
+                if (orderLatest) {
                     orderLatest = !orderLatest;
                     settings.saveSettings(newsType, orderLatest);
                     articleDatas = sorting.sortByOldest(articleDatas);
@@ -583,12 +594,16 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 handler.postDelayed(timedTask, 60000);
                 return true;
             case R.id.hour:
-                handler.postDelayed(timedTask, 60*60000);
+                handler.postDelayed(timedTask, 60 * 60000);
                 return true;
             case R.id.day:
-                handler.postDelayed(timedTask, 24*60*60000);
+                handler.postDelayed(timedTask, 24 * 60 * 60000);
                 return true;
             case R.id.clearread:
+                for (int i = 0; i < articleDatas.size(); i++) {
+                    articleDatas.get(i).setReadNews(false);
+                }
+                /*
                 if (articleDatas2.size() >= 30) {
                     articleDatas2.remove(0);
                 }
@@ -606,11 +621,17 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                         }
                         i--;
                     }
-                }
+
+                 */
+
+
                 checkReadStuff();
-                newsStorage.saveData();
+                newsStorage.saveData(articleDatas);
+
+
                 setupListView();
                 return true;
+
             case R.id.reset:
                 articleDatas.clear();
                 articleListAdapter.clear();

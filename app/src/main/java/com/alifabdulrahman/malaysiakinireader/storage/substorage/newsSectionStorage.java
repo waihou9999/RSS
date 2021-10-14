@@ -48,7 +48,7 @@ public class newsSectionStorage extends storage {
         editor.putString("sectionType", newsType);
         editor.putString ("wasReading", wasReading);
 
-        System.out.println("checking65" + sp.getString("sectionURL", ""));
+        //System.out.println("checking65" + sp.getString("sectionURL", ""));
     }
 
     public void setReading(String wasReading){
