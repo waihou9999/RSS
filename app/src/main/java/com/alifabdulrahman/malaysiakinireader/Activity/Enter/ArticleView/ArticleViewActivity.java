@@ -133,7 +133,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             articleDatas = new ArrayList<>();
         }
 
-        System.out.println("wtf" + articleDatas);
+        //System.out.println("wtf" + articleDatas);
 
 
         //System.out.println("webload10" + articleDatas);
@@ -673,7 +673,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             if(tts.isSpeaking())
                 tts.stop();
             speakSentences(articleDatas.get(index).getContent());
-            System.out.println("wtf" + articleDatas.get(index).getContent());
+            //System.out.println("wtf" + articleDatas.get(index).getContent());
         }
         else{
             moveArticle(true);
