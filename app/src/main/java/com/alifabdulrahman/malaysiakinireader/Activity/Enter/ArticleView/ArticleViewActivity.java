@@ -69,12 +69,13 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
     int savedReadIndex;
     int starbigoff_ = android.R.drawable.ic_media_play;
     int starbigon_ = android.R.drawable.ic_media_pause;
-    boolean startTTS = false;
+    boolean startTTS;
     String wasReading = "";
     private NewsStorage newsStorage;
     private newsSectionStorage newsSectionStorage;
     private settings settings;
     private currentArticle currentArticle;
+    int counter = 0;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -111,7 +112,9 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
        // newsType = getIntent().getExtras().getString("NewsType");
         index = getIntent().getExtras().getInt("index");
         //startTTS = getIntent().getExtras().getBoolean("startTTS");
-        startTTS = true;
+
+
+
 
         //System.out.println("index is " + orderLatest + newsType + index);
 
@@ -123,6 +126,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         newsStorage = new NewsStorage(this, newsType);
         orderLatest = settings.loadSettings(newsType);
 
+        startTTS = currentArticle.startTSS();
 
 
         newsStorage.loadData();
@@ -133,7 +137,10 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             articleDatas = new ArrayList<>();
         }
 
-        System.out.println("wtf" + articleDatas);
+        if (startTTS)
+            stopBtn.setImageResource(starbigon_);
+        else
+            stopBtn.setImageResource(starbigoff_);
 
 
         //System.out.println("webload10" + articleDatas);
@@ -153,8 +160,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         url = currentArticle.loadData();
 
 
+
+
         mWebView = findViewById(R.id.webview);
         mWebView.getSettings().setJavaScriptEnabled(true);
+
+        loadWebView();
 
         //Bundle extras = getIntent().getExtras();
         //if (extras != null) {
@@ -163,7 +174,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             } else {
                 initializeTTS();
                 stopPlay();
-                readFreeOrPaid();
+                //readFreeOrPaid();
             }
             //The key argument here must match that used in the other activity
         //}
@@ -353,15 +364,15 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             public void onPageFinished(WebView view, String url){
                 super.onPageFinished(view, url);
                 try {
-                    Thread.sleep(timex);
+                    Thread.sleep(3000);
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
                 //second load
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-                System.out.println("webloadfinished");
 
+                System.out.println("fkla webloadfinished");
 
                 //String cookies = CookieManager.getInstance().getCookie(url);
                 //System.out.println( "All the cookies in a string:" + cookies);
@@ -428,7 +439,6 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 }
             }
 
-
             articleDatas.get(index).getContent().clear();
             articleDatas.get(index).setContent(tempList);
 
@@ -493,15 +503,17 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             case R.id.stopbtn:
                 Drawable starbigon = getResources().getDrawable(starbigon_);
                 Drawable starbigoff = getResources().getDrawable(starbigoff_);
-                if (stopBtn.getDrawable().getConstantState().equals(starbigon.getConstantState()) || tts.isSpeaking()) {
+
+                if (stopBtn.getDrawable().getConstantState().equals(starbigon.getConstantState()) || tts.isSpeaking() || startTTS == true) {
                     stopPlay();
                     //pauseIconCheck();
                     stopBtn.setImageResource(starbigoff_);
                     startTTS = false;
+                    currentArticle.setTTS(startTTS);
                     saveData();
                     break;
                 }
-                if (stopBtn.getDrawable().getConstantState().equals(starbigoff.getConstantState())) {
+                if (stopBtn.getDrawable().getConstantState().equals(starbigoff.getConstantState()) || startTTS == false) {
                     //System.out.println("lol");
                     initializeTTS();
                     tts.stop();
@@ -509,6 +521,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                     stopBtn.setImageResource(starbigon_);
                     startTTS = true;
                    // System.out.println(articleDatas);
+                    currentArticle.setTTS(startTTS);
                     saveData();
                     break;
                 }
@@ -666,14 +679,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 mWebView.addJavascriptInterface(new GetHTML(this), "Scrap");
                 mWebView.loadUrl("javascript:window.Scrap.getHTML" +
                         "(document.getElementsByTagName('html')[0].outerHTML);");
-            System.out.println("webload8");
             //}
             //oldsize = newsize;
             //newsize = articleDatas.get(index).getContent().size();
             if(tts.isSpeaking())
                 tts.stop();
             speakSentences(articleDatas.get(index).getContent());
-            System.out.println("wtf" + articleDatas.get(index).getContent());
         }
         else{
             moveArticle(true);
