@@ -31,10 +31,6 @@ public class currentArticle extends storage {
         return sp.getString("lastURL", "");
     }
 
-    public boolean startTSS(){return sp.getBoolean("startTSS", true);}
-
-    public void setTTS(boolean tss){editor.putBoolean("startTSS", tss);}
-
 
     public String loadLastArticle(){return "no";}
 
