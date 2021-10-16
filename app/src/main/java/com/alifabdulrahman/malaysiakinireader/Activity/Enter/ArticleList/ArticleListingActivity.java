@@ -261,7 +261,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 Elements contentContainer = localDoc.select("div[id $= full-content-container]");
                 //Elements contentContainer = localDoc.select("script[id$=__NEXT_DATA__]");
 
-                Elements docContents = contentContainer.select("p");
+                Elements docContents = contentContainer.select("p, li");
 
 
 

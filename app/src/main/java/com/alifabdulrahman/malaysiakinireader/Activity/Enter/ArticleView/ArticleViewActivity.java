@@ -421,7 +421,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             //Elements contentContainer = doc.select("script[id$=__NEXT_DATA__]");
             //Elements classContents =  contentContainer.select("div[class$=content]");
             Elements classContents =  doc.select("div[id $= full-content-container]");
-            Elements contents = classContents.select("p");
+            Elements contents = classContents.select("p, li");
             for(Element content : contents){
                 if(!(content.text().equals(""))){
                     tempList.add(content.text());
