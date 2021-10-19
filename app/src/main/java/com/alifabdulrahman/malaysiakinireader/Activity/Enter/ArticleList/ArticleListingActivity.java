@@ -121,6 +121,16 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+
+                if(articleDatas.isEmpty()) {
+                    new GetContents(ArticleListingActivity.this).execute();
+                }
+                if (!articleDatas.isEmpty()){
+                    new CheckNewContents().execute();
+                }
+
+                setupListView();
+
                 pullToRefresh.setRefreshing(false);
             }
         });
@@ -262,9 +272,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 //Elements contentContainer = localDoc.select("script[id$=__NEXT_DATA__]");
 
                 Elements docContents = contentContainer.select("p, li");
-
-
-
 
                 //Create temporary array to hold the contents
                 ArrayList<String> tempList = new ArrayList<>();
@@ -599,11 +606,15 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             case R.id.day:
                 handler.postDelayed(timedTask, 24 * 60 * 60000);
                 return true;
-            case R.id.clearread:
+
+            case R.id.unread:
                 for (int i = 0; i < articleDatas.size(); i++) {
                     articleDatas.get(i).setReadNews(false);
                 }
-                /*
+
+
+            case R.id.clearread:
+
                 if (articleDatas2.size() >= 30) {
                     articleDatas2.remove(0);
                 }
@@ -612,7 +623,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                         boolean checker = true;
                         if (articleDatas2 != null) {
                             for (int a = 0; a < articleDatas2.size(); a++) {
-                                if (articleDatas.get(i).getTitle().equals(articleDatas2.get(a).getTitle())) checker = false;
+                                if (articleDatas.get(i).getTitle().equals(articleDatas2.get(a).getTitle()))
+                                    checker = false;
                             }
                         }
                         if (checker) articleDatas2.add(articleDatas.get(i));
@@ -622,14 +634,12 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                         i--;
                     }
 
-                 */
+                    checkReadStuff();
+                    newsStorage.saveData(articleDatas);
 
 
-                checkReadStuff();
-                newsStorage.saveData(articleDatas);
-
-
-                setupListView();
+                    setupListView();
+                }
                 return true;
 
             case R.id.reset:
@@ -639,6 +649,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 articleDatas2 = new ArrayList<>();
                 new GetContents(this).execute();
                 return true;
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -674,5 +686,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         return newList;
     }
 }
+
+
 
 

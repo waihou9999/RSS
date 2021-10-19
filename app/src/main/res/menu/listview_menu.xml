@@ -34,6 +34,11 @@
     </item>
 
     <item
+        android:id="@+id/unread"
+        android:title="Unread news"/>
+
+    <item
+
         android:id="@+id/clearread"
         android:title="Clear read news"/>
 
