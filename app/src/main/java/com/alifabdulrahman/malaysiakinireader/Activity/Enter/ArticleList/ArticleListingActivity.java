@@ -122,9 +122,25 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             @Override
             public void onRefresh() {
 
+                newsSectionURL = newsSectionStorage.getSectionURL();
+                newsType = newsSectionStorage.getNewsSectionType();
+
+
+                newsStorage = new NewsStorage(ArticleListingActivity.this, newsType);
+
+                newsStorage.loadData();
+                orderLatest = newsStorage.isOrderLatest();
+
+                articleDatas = newsStorage.loadArt1();
+
+                if (articleDatas == null)
+                    articleDatas = new ArrayList<>();
+
                 if(articleDatas.isEmpty()) {
                     new GetContents(ArticleListingActivity.this).execute();
                 }
+
+
                 if (!articleDatas.isEmpty()){
                     new CheckNewContents().execute();
                 }
