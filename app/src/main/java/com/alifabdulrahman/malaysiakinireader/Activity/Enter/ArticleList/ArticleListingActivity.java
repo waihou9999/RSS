@@ -285,9 +285,18 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 //Get all <p> from HTML
                 Elements contentContainer = localDoc.select("div[id $= full-content-container]");
+
+
                 //Elements contentContainer = localDoc.select("script[id$=__NEXT_DATA__]");
 
                 Elements docContents = contentContainer.select("p, li");
+                System.out.println(docContents);
+
+                if (contentContainer == null || contentContainer.isEmpty()){
+                    contentContainer = localDoc.select("div[id $= __next]");
+                    docContents = contentContainer.select("p");
+                    System.out.println(docContents);
+                }
 
                 //Create temporary array to hold the contents
                 ArrayList<String> tempList = new ArrayList<>();

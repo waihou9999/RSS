@@ -422,6 +422,14 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             //Elements classContents =  contentContainer.select("div[class$=content]");
             Elements classContents =  doc.select("div[id $= full-content-container]");
             Elements contents = classContents.select("p, li");
+
+
+            if (classContents == null || classContents.isEmpty()){
+                classContents = doc.select("div[id $= __next]");
+                contents = classContents.select("p");
+            }
+
+
             for(Element content : contents){
                 if(!(content.text().equals(""))){
                     tempList.add(content.text());
