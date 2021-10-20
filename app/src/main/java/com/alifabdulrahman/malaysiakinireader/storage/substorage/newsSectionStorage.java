@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 public class newsSectionStorage extends storage {
      private final String storageName = "newsSectionStorage";
+     private final String storageName2 = "NewYorkTimeStorage";
      private ArrayList<NewsSectionData> newsSection2;
      private final String newsSectionType = "newsSectionType";
 

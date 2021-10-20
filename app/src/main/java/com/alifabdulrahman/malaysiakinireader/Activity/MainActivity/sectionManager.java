@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.alifabdulrahman.malaysiakinireader.R;
 import com.alifabdulrahman.malaysiakinireader.Activity.About.NewsSectionActivity2;
 import com.alifabdulrahman.malaysiakinireader.Activity.Enter.ArticleList.ArticleListingActivity;
 import com.alifabdulrahman.malaysiakinireader.Activity.Enter.ArticleView.ArticleViewActivity;
