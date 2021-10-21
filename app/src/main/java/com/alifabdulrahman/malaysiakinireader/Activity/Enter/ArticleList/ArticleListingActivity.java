@@ -686,7 +686,23 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                     newsStorage.saveData(articleDatas);
 
-                    setupListView();
+                articleDatas = newsStorage.loadArt1();
+
+                if (articleDatas == null)
+                    articleDatas = new ArrayList<>();
+
+                if(articleDatas.isEmpty()) {
+                    new GetContents(ArticleListingActivity.this).execute();
+                }
+
+                if (!articleDatas.isEmpty()){
+                    new CheckNewContents().execute();
+                }
+
+                setupListView();
+
+
+
 
                 return true;
 
