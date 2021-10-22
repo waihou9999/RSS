@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 newsSources.add(new NewsSource("Enter", ""));
                 newsSources.add(new NewsSource("Help", ""));
                 newsSources.add(new NewsSource("About", ""));
+
                 //newsSources.add(new NewsSource("The New York Times (in development)", "https://www.nytimes.com/"));
                 //newsSources.add(new NewsSource("The Star (in development)", "https://www.thestar.com.my"));
                 //https://www.thestar.com.my

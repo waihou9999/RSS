@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -30,6 +32,7 @@ import com.alifabdulrahman.malaysiakinireader.storage.substorage.NewsStorage;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.currentArticle;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.newsSectionStorage;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.settings;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.currentRSS;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -47,9 +50,11 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -58,6 +63,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     private ArrayList<ArticleData> articleDatas = new ArrayList<>(); // current
     //private ArrayList<ArticleData> articleDatas2; // new/temp
     private ArrayList<ArticleData> articleDatas2 = new ArrayList<>(); // stores all read articles, only clears when reset
+    private ArrayList<String>rss = new ArrayList<>();
     private boolean orderLatest;
     private ListView listView;
     private String newsSectionURL, newsType;
@@ -70,6 +76,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     private sorting sorting;
     private settings settings;
     private currentArticle currentArticle;
+    private currentRSS currentRSS;
     //private boolean readContentAvailable;
 
     @SuppressLint({"WrongViewCast", "WrongThread"})
@@ -82,6 +89,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         newsSectionStorage = new newsSectionStorage(this);
         sorting = new sorting(this);
         settings = new settings(this);
+        currentRSS = new currentRSS(this);
 
 
         //get news type and news section URL based on tapped sections
@@ -161,8 +169,10 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     private void setupListView() {
 
         listView = findViewById(R.id.news_list);
+        articleDatas = newsStorage.loadArt1();
         articleListAdapter = new ArticleListAdapter(this, articleDatas);
         listView.setAdapter(articleListAdapter);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -275,9 +285,18 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 //Get all <p> from HTML
                 Elements contentContainer = localDoc.select("div[id $= full-content-container]");
+
+
                 //Elements contentContainer = localDoc.select("script[id$=__NEXT_DATA__]");
 
                 Elements docContents = contentContainer.select("p, li");
+                System.out.println(docContents);
+
+                if (contentContainer == null || contentContainer.isEmpty()){
+                    contentContainer = localDoc.select("div[id $= __next]");
+                    docContents = contentContainer.select("p");
+                    System.out.println(docContents);
+                }
 
                 //Create temporary array to hold the contents
                 ArrayList<String> tempList = new ArrayList<>();
@@ -297,8 +316,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                         tempList.add(e.text());
                     }
                 }
-
-                System.out.println("here0" + tempList);
 
                 //Pass the temporary array into the articleData
                 newArticles.get(i).setContent(tempList);
@@ -411,8 +428,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 //remove article already in articleDatas
                 newArticles.removeAll(articleDatas);
-
-
 
                 //Add newArticles to current articleData
                 articleDatas.addAll(newArticles);
@@ -544,6 +559,39 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         }
     }
 
+    //Check current RSS
+    public class compareRSS extends AsyncTask<String, Void, ArrayList<String>> {
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+        protected ArrayList<String> doInBackground(String... params) {
+
+        ArrayList<String>currentLink = new ArrayList<>();
+
+            try {
+                Document doc = Jsoup.connect(newsSectionURL).get();
+                Elements items = doc.select("item");
+                Elements link = items.select("link");
+
+                for (Element links : link) {
+                    currentLink.add(links.text());
+                }
+
+            } catch (Exception e) {
+                Log.d("JSOUPERROR: ", e.getMessage());
+            }
+
+
+            String listString = String.join(", ", currentLink);
+            currentRSS.saveData(listString);
+
+            return null;
+        }
+
+
+    }
+
+
     //autoupdate attempt #1, dysfunctional
     /*
     public boolean updater () {
@@ -621,31 +669,41 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             case R.id.clearread:
 
-                if (articleDatas2.size() >= 30) {
-                    articleDatas2.remove(0);
-                }
-                for (int i = 0; i < articleDatas.size(); i++) {
-                    if (articleDatas.get(i).getReadNews()) {
-                        boolean checker = true;
-                        if (articleDatas2 != null) {
-                            for (int a = 0; a < articleDatas2.size(); a++) {
-                                if (articleDatas.get(i).getTitle().equals(articleDatas2.get(a).getTitle()))
-                                    checker = false;
-                            }
-                        }
-                        if (checker) articleDatas2.add(articleDatas.get(i));
-                        if ((articleDatas != null) && (!articleDatas.isEmpty())) {
+                new compareRSS().execute();
+
+                String currentLink = currentRSS.loadData();
+
+                for (int i = articleDatas.size() - 1; i > 0; i--){
+                    boolean isFound = currentLink.contains(articleDatas.get(i).getLink());
+
+                    if (articleDatas.get(i).getReadNews())
+                        if ( (articleDatas != null) && (!articleDatas.isEmpty()) && (isFound == false) ){
                             articleDatas.remove(i);
                         }
-                        i--;
                     }
 
-                    checkReadStuff();
+                    currentRSS.clearData();
+
                     newsStorage.saveData(articleDatas);
 
+                articleDatas = newsStorage.loadArt1();
 
-                    setupListView();
+                if (articleDatas == null)
+                    articleDatas = new ArrayList<>();
+
+                if(articleDatas.isEmpty()) {
+                    new GetContents(ArticleListingActivity.this).execute();
                 }
+
+                if (!articleDatas.isEmpty()){
+                    new CheckNewContents().execute();
+                }
+
+                setupListView();
+
+
+
+
                 return true;
 
             case R.id.reset:
