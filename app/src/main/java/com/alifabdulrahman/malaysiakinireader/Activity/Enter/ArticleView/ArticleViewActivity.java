@@ -111,7 +111,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
        // newsType = getIntent().getExtras().getString("NewsType");
         index = getIntent().getExtras().getInt("index");
         //startTTS = getIntent().getExtras().getBoolean("startTTS");
-        startTTS = true;
+
+
 
         //System.out.println("index is " + orderLatest + newsType + index);
 
@@ -123,6 +124,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         newsStorage = new NewsStorage(this, newsType);
         orderLatest = settings.loadSettings(newsType);
 
+        startTTS = currentArticle.startTSS();
+
+        if (startTTS)
+            stopBtn.setImageResource(starbigon_);
+        else
+            stopBtn.setImageResource(starbigoff_);
 
 
         newsStorage.loadData();
@@ -497,7 +504,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                     stopPlay();
                     //pauseIconCheck();
                     stopBtn.setImageResource(starbigoff_);
-                    startTTS = false;
+                    currentArticle.setTTS(false);
                     saveData();
                     break;
                 }
@@ -506,8 +513,8 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                     initializeTTS();
                     tts.stop();
                     //pauseIconCheck();
+                    currentArticle.setTTS(true);
                     stopBtn.setImageResource(starbigon_);
-                    startTTS = true;
                    // System.out.println(articleDatas);
                     saveData();
                     break;
