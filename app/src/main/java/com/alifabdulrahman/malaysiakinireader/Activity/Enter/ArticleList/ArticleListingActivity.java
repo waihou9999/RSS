@@ -61,7 +61,6 @@ import java.util.TimeZone;
 public class ArticleListingActivity extends AppCompatActivity implements Serializable {
 
     private ArrayList<ArticleData> articleDatas = new ArrayList<>(); // current
-    //private ArrayList<ArticleData> articleDatas2; // new/temp
     private ArrayList<ArticleData> articleDatas2 = new ArrayList<>(); // stores all read articles, only clears when reset
     private ArrayList<String>rss = new ArrayList<>();
     private boolean orderLatest;
@@ -70,14 +69,12 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     private ArticleListAdapter articleListAdapter;
     private SwipeRefreshLayout pullToRefresh;
     private boolean newContentAvailable;
-    private String wasReading;
     private newsSectionStorage newsSectionStorage;
     private NewsStorage newsStorage;
     private sorting sorting;
     private settings settings;
     private currentArticle currentArticle;
     private currentRSS currentRSS;
-    //private boolean readContentAvailable;
 
     @SuppressLint({"WrongViewCast", "WrongThread"})
     @Override
@@ -87,42 +84,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
         //readContentAvailable = false;
         newsSectionStorage = new newsSectionStorage(this);
-        sorting = new sorting(this);
-        settings = new settings(this);
-        currentRSS = new currentRSS(this);
 
-
-        //get news type and news section URL based on tapped sections
-        newsSectionURL = newsSectionStorage.getSectionURL();
         newsType = newsSectionStorage.getNewsSectionType();
+        newsSectionURL = newsSectionStorage.getSectionURL();
 
-
-        newsStorage = new NewsStorage(this, newsType);
-
-        newsStorage.loadData();
-        orderLatest = newsStorage.isOrderLatest();
-
-        articleDatas = newsStorage.loadArt1();
-
-        if (articleDatas == null)
-            articleDatas = new ArrayList<>();
-
-        if(articleDatas.isEmpty()) {
-            new GetContents(ArticleListingActivity.this).execute();
-        }
-
-
-        if (!articleDatas.isEmpty()){
-            new CheckNewContents().execute();
-        }
-
-
-        //System.out.println(articleDatas);
-
-
-
-
-        // loadReading();
+        updateList();
 
         //Implement pull to refresh
         pullToRefresh = findViewById(R.id.pullToRefresh);
@@ -130,39 +96,17 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             @Override
             public void onRefresh() {
 
-                articleDatas = newsStorage.loadArt1();
-
-                if (articleDatas == null)
-                    articleDatas = new ArrayList<>();
-
-                if(articleDatas.isEmpty()) {
-                    new GetContents(ArticleListingActivity.this).execute();
-                }
-
-                if (!articleDatas.isEmpty()){
-                    new CheckNewContents().execute();
-                }
-
-                setupListView();
+             updateList();
 
                 pullToRefresh.setRefreshing(false);
             }
         });
-
-
-        //checkReadStuff();
-        setupListView();
-        //articleDatas2 = articleDatas;
-        //loadReading();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        //newsStorage.loadData();
-        newsStorage.loadData();
-        articleDatas = newsStorage.loadArt1();
-        setupListView();
+        updateList();
     }
 
 
@@ -172,7 +116,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         articleDatas = newsStorage.loadArt1();
         articleListAdapter = new ArticleListAdapter(this, articleDatas);
         listView.setAdapter(articleListAdapter);
-
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -198,7 +141,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     public void onBackPressed() {
         finish();
         super.onBackPressed();
-        wasReading = "no";
 
         Intent toSection = new Intent(ArticleListingActivity.this, NewsSectionActivity.class);
         startActivity(toSection);
@@ -432,22 +374,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 //Add newArticles to current articleData
                 articleDatas.addAll(newArticles);
 
-                articleDatas = removeDuplicates(articleDatas);
-/*
-                System.out.println("Passed this point");
-                System.out.println("articleDatas = " + articleDatas.size());
-                System.out.println("articleDatas2 = " + articleDatas2.size());
-                System.out.println("articleDatas2 = " + articleDatas2.size());
-
-                for (int i = 0; i < articleDatas.size(); i++) {
-                    for (int j = 0; j < articleDatas2.size(); j++)
-                        // if item in current list is available in old list and is flagged as read, remove item in current list
-                        if (articleDatas.get(i).getTitle().equals(articleDatas2.get(j).getTitle()))
-                            if (articleDatas2.get(j).getReadNews() == true) {
-                                articleDatas.remove(i);
-                            }
-                }
-*/
                 //Sort according to user's settings
                 if(orderLatest){
                     articleDatas = sorting.sortByLatest(articleDatas);
@@ -488,11 +414,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             ArrayList<String> current = new ArrayList<>();
             ArrayList<String> checkNew = new ArrayList<>();
-            //ArrayList<String> checkOld = new ArrayList<>();
-            /*for (ArticleData a : articleDatas) {
-                current.add(a.getTitle());
-            }
-             */
 
             for (int a = 0; a < articleDatas.size(); a++) {
                 current.add(articleDatas.get(a).getTitle());
@@ -515,10 +436,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             Collections.sort(current);
             Collections.sort(checkNew);
 
-            //System.out.println("checkOld: " + checkOld.size());
-            //System.out.println("current: " + current.size());
-            //System.out.println("checkNew: " + checkNew.size());
-
             if(current.size() == checkNew.size()){
                 if(current.equals(checkNew)){
                     newContentAvailable = false;
@@ -537,22 +454,17 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 }
             }
 
-            //if (checkOld.size() != current.size()) {
-            //    readContentAvailable = true;
-            //}
             return null;
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> dummy) {
-            //System.out.println("test");
+
             if (newContentAvailable) {
                 new GetContents(ArticleListingActivity.this).execute();
             } else {
                 Toast.makeText(ArticleListingActivity.this, "No new contents available", Toast.LENGTH_LONG).show();
             }
-            //if (articleDatas2 == null) System.out.println("null");
-            //if ((articleDatas2 != null) && (!articleDatas2.isEmpty())) System.out.println(articleDatas.size() + "|" + articleDatas2.size());
 
             checkReadStuff();
             setupListView();
@@ -590,20 +502,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
 
     }
-
-
-    //autoupdate attempt #1, dysfunctional
-    /*
-    public boolean updater () {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask(){
-            public void run() {
-                new CheckNewContents().execute();
-            }
-        }, 0, 1000);
-        return true;
-    }
-    */
 
     //autoupdate attempt #2, functional
     final Handler handler = new Handler();
@@ -666,8 +564,9 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     articleDatas.get(i).setReadNews(false);
                 }
 
-
             case R.id.clearread:
+
+                currentRSS.clearData();
 
                 new compareRSS().execute();
 
@@ -675,14 +574,16 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 for (int i = articleDatas.size() - 1; i > 0; i--){
                     boolean isFound = currentLink.contains(articleDatas.get(i).getLink());
+                    System.out.println("fk" + currentLink);
+                    System.out.println("fk" + articleDatas.get(i).getLink());
+
+                    System.out.println("fk" + isFound);
 
                     if (articleDatas.get(i).getReadNews())
                         if ( (articleDatas != null) && (!articleDatas.isEmpty()) && (isFound == false) ){
                             articleDatas.remove(i);
                         }
                     }
-
-                    currentRSS.clearData();
 
                     newsStorage.saveData(articleDatas);
 
@@ -701,9 +602,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 setupListView();
 
-
-
-
                 return true;
 
             case R.id.reset:
@@ -713,7 +611,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 articleDatas2 = new ArrayList<>();
                 new GetContents(this).execute();
                 return true;
-
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -726,16 +623,13 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 for (int j = 0; j < articleDatas2.size(); j++) {
                     // if item in current list is available in old list and is flagged as read, remove item in current list
                     if (articleDatas.get(i).getTitle().equals(articleDatas2.get(j).getTitle())) {
-                        //System.out.println("BEFORE: " + articleDatas.size());
                         articleDatas.remove(i);
                         i--;
-                        //System.out.println("AFTER: " + articleDatas.size());
                         break;
                     }
                 }
             }
-            newsStorage.saveData();
-            //setupListView();
+            newsStorage.saveData(articleDatas);
         }
     }
 
@@ -749,8 +643,34 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
         return newList;
     }
+
+    private void updateList(){
+
+        sorting = new sorting(this);
+        settings = new settings(this);
+        currentRSS = new currentRSS(this);
+
+        //get news type and news section URL based on tapped sections
+
+        newsStorage = new NewsStorage(this, newsType);
+
+        newsStorage.loadData();
+        orderLatest = newsStorage.isOrderLatest();
+
+        articleDatas = newsStorage.loadArt1();
+
+        if (articleDatas == null)
+            articleDatas = new ArrayList<>();
+
+        if(articleDatas.isEmpty()) {
+            new GetContents(ArticleListingActivity.this).execute();
+        }
+
+
+        if (!articleDatas.isEmpty()){
+            new CheckNewContents().execute();
+        }
+
+        setupListView();
+    }
 }
-
-
-
-
