@@ -363,8 +363,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                             articleDatas.removeAll(newTemp);
                         }
                     }
-
-
                 }
 
 
@@ -670,6 +668,13 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         if (!articleDatas.isEmpty()){
             new CheckNewContents().execute();
         }
+
+        if (orderLatest) {
+            articleDatas = sorting.sortByLatest(articleDatas);
+        }
+
+        else
+            articleDatas = sorting.sortByOldest(articleDatas);
 
         setupListView();
     }
