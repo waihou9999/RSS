@@ -397,7 +397,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             //Display
             checkReadStuff();
+<<<<<<< HEAD
             setupListView();
+=======
+            updateList();
+>>>>>>> parent of 6d3d05f (Update ArticleListingActivity.java)
         }
     }
 
@@ -466,7 +470,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             }
 
             checkReadStuff();
+<<<<<<< HEAD
             setupListView();
+=======
+            updateList();
+>>>>>>> parent of 6d3d05f (Update ArticleListingActivity.java)
         }
     }
 
@@ -597,7 +605,11 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     new CheckNewContents().execute();
                 }
 
+<<<<<<< HEAD
                 setupListView();
+=======
+                updateList();
+>>>>>>> parent of 6d3d05f (Update ArticleListingActivity.java)
 
                 return true;
 
