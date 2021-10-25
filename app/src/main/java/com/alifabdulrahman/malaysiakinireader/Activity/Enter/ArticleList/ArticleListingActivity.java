@@ -562,6 +562,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     articleDatas.get(i).setReadNews(false);
                 }
 
+                return true;
+
             case R.id.clearread:
 
                 currentRSS.clearData();
@@ -570,12 +572,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 String currentLink = currentRSS.loadData();
 
-                for (int i = articleDatas.size() - 1; i > 0; i--){
+                for (int i = articleDatas.size() - 1; i >= 0; i--){
                     boolean isFound = currentLink.contains(articleDatas.get(i).getLink());
-                    System.out.println("fk" + currentLink);
-                    System.out.println("fk" + articleDatas.get(i).getLink());
-
-                    System.out.println("fk" + isFound);
 
                     if (articleDatas.get(i).getReadNews())
                         if ( (articleDatas != null) && (!articleDatas.isEmpty()) && (isFound == false) ){
