@@ -328,7 +328,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 if(!orderLatest){
                     articleDatas = sorting.sortByOldest(articleDatas);
                 }
-
             }
             else{
 
@@ -384,6 +383,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             checkReadStuff();
             newsStorage.saveData(articleDatas);
+            setupListView();
 
             return null;
         }
@@ -397,7 +397,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             //Display
             checkReadStuff();
-            updateList();
+            setupListView();
         }
     }
 
@@ -466,7 +466,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             }
 
             checkReadStuff();
-            updateList();
+            setupListView();
         }
     }
 
@@ -597,7 +597,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                     new CheckNewContents().execute();
                 }
 
-                updateList();
+                setupListView();
 
                 return true;
 
