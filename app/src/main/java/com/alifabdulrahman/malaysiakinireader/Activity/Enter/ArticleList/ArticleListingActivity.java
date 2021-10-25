@@ -383,6 +383,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             checkReadStuff();
             newsStorage.saveData(articleDatas);
+            setupListView();
 
             return null;
         }

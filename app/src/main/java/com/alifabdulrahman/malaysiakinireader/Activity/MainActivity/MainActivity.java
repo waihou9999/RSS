@@ -87,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements Serializable {
                 newsSources = new ArrayList<>();
                 dialog_builder = new AlertDialog.Builder(MainActivity.this);
                 startUp = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Disclaimer")
-                        .setMessage("This application is not officially affiliated with any of the news sources included. It will only read the news aloud.")
+                        .setTitle("Reminder")
+                        .setMessage("To read the full (paid) article, please log in on the first article you before starting the voice reading. Once it is logged in, you won't have to log in again.")
                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
