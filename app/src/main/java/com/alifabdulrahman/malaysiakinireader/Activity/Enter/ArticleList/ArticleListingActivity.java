@@ -381,6 +381,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 }
             }
 
+            checkReadStuff();
             newsStorage.saveData(articleDatas);
             setupListView();
 
@@ -395,7 +396,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
 
             //Display
-            updateList();
+            checkReadStuff();
+            setupListView();
         }
     }
 
@@ -462,6 +464,9 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             } else {
                 Toast.makeText(ArticleListingActivity.this, "No new contents available", Toast.LENGTH_LONG).show();
             }
+
+            checkReadStuff();
+            setupListView();
         }
     }
 
@@ -489,7 +494,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
 
             String listString = String.join(", ", currentLink);
-            currentRSS.clearData();
             currentRSS.saveData(listString);
 
             return null;
@@ -497,7 +501,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
 
     }
-
 
     //autoupdate attempt #2, functional
     final Handler handler = new Handler();
@@ -508,8 +511,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             new CheckNewContents().execute();
         }
     };
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -572,12 +573,10 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                 String currentLink = currentRSS.loadData();
 
-
                 for (int i = articleDatas.size() - 1; i >= 0; i--){
                     boolean isFound = currentLink.contains(articleDatas.get(i).getLink());
 
                     if (articleDatas.get(i).getReadNews())
-                        System.out.println("fk" + currentLink + articleDatas.get(i).getLink());
                         if ( (articleDatas != null) && (!articleDatas.isEmpty()) && (isFound == false) ){
                             articleDatas.remove(i);
                         }
@@ -585,7 +584,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                     newsStorage.saveData(articleDatas);
 
-                /*
                 articleDatas = newsStorage.loadArt1();
 
                 if (articleDatas == null)
@@ -598,9 +596,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 if (!articleDatas.isEmpty()){
                     new CheckNewContents().execute();
                 }
-                 */
+
                 setupListView();
-                //updateList();
 
                 return true;
 
@@ -608,6 +605,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
                 articleDatas.clear();
                 articleListAdapter.clear();
                 Toast.makeText(ArticleListingActivity.this, "Article list cleared. Refreshing...", Toast.LENGTH_LONG).show();
+                articleDatas2 = new ArrayList<>();
                 new GetContents(this).execute();
                 return true;
 
@@ -616,8 +614,21 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
         }
     }
 
-
-
+    public void checkReadStuff() {
+        if ((articleDatas2 != null)) {
+            for (int i = 0; i < articleDatas.size(); i++) {
+                for (int j = 0; j < articleDatas2.size(); j++) {
+                    // if item in current list is available in old list and is flagged as read, remove item in current list
+                    if (articleDatas.get(i).getTitle().equals(articleDatas2.get(j).getTitle())) {
+                        articleDatas.remove(i);
+                        i--;
+                        break;
+                    }
+                }
+            }
+            newsStorage.saveData(articleDatas);
+        }
+    }
 
     private ArrayList<ArticleData> removeDuplicates(ArrayList<ArticleData> list){
         ArrayList<ArticleData> newList = new ArrayList<>();
