@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.alifabdulrahman.malaysiakinireader.model.ArticleData;
-import com.alifabdulrahman.malaysiakinireader.model.NewsSectionData;
 import com.alifabdulrahman.malaysiakinireader.storage.storage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,13 +33,12 @@ public class NewsStorage extends storage {
         this.newsType = newsType;
     }
 
-
     public boolean isOrderLatest() {
         return orderLatest;
     }
 
     //Load data of articles
-    public void loadData() {
+    public ArrayList<ArticleData> loadData() {
         Gson gson = new Gson();
         Gson xson = new Gson();
         String json = sp.getString(newsType, null);
@@ -67,9 +65,7 @@ public class NewsStorage extends storage {
             articleDatas = new ArrayList<>();
         }
 
-        if (articleDatas2 == null) {
-            articleDatas2 = new ArrayList<>();
-        }
+        return articleDatas;
     }
 
     //Save data of articles retrieved
@@ -100,9 +96,12 @@ public class NewsStorage extends storage {
         editor.apply();
     }
 
+    /*
     public ArrayList<ArticleData>loadArt1(){
         return articleDatas;
     }
+
+     */
 
     public ArrayList<ArticleData>loadArt2(){
         return articleDatas2;

@@ -84,18 +84,23 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
         //readContentAvailable = false;
         newsSectionStorage = new newsSectionStorage(this);
+        sorting = new sorting(this);
+        settings = new settings(this);
+        currentRSS = new currentRSS(this);
 
         newsType = newsSectionStorage.getNewsSectionType();
         newsSectionURL = newsSectionStorage.getSectionURL();
+        newsStorage = new NewsStorage(this, newsType);
 
-        updateList();
+        //updateList();
+
+        setupListView();
 
         //Implement pull to refresh
         pullToRefresh = findViewById(R.id.pullToRefresh);
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
              updateList();
 
                 pullToRefresh.setRefreshing(false);
@@ -106,14 +111,39 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
     @Override
     public void onResume() {
         super.onResume();
-        updateList();
+        setupListView();
     }
 
 
     private void setupListView() {
+        //get news type and news section URL based on tapped sections
+
+        articleDatas = newsStorage.loadData();
+        orderLatest = newsStorage.isOrderLatest();
+
+        //articleDatas = newsStorage.loadArt1();
+
+        if (articleDatas == null)
+            articleDatas = new ArrayList<>();
+
+        if(articleDatas.isEmpty()) {
+            new GetContents(ArticleListingActivity.this).execute();
+        }
+
+        if (!articleDatas.isEmpty()){
+            new CheckNewContents().execute();
+        }
+
+        if (orderLatest) {
+            articleDatas = sorting.sortByLatest(articleDatas);
+        }
+
+        else
+            articleDatas = sorting.sortByOldest(articleDatas);
+
 
         listView = findViewById(R.id.news_list);
-        articleDatas = newsStorage.loadArt1();
+        //articleDatas = newsStorage.loadArt1();
         articleListAdapter = new ArticleListAdapter(this, articleDatas);
         listView.setAdapter(articleListAdapter);
 
@@ -383,7 +413,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             checkReadStuff();
             newsStorage.saveData(articleDatas);
-            setupListView();
 
             return null;
         }
@@ -584,7 +613,8 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
                     newsStorage.saveData(articleDatas);
 
-                articleDatas = newsStorage.loadArt1();
+               // articleDatas = newsStorage.loadArt1();
+                articleDatas = newsStorage.loadData();
 
                 if (articleDatas == null)
                     articleDatas = new ArrayList<>();
@@ -643,18 +673,15 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
     private void updateList(){
 
-        sorting = new sorting(this);
-        settings = new settings(this);
-        currentRSS = new currentRSS(this);
-
         //get news type and news section URL based on tapped sections
-
+        newsType = newsSectionStorage.getNewsSectionType();
+        newsSectionURL = newsSectionStorage.getSectionURL();
         newsStorage = new NewsStorage(this, newsType);
 
-        newsStorage.loadData();
+        articleDatas = newsStorage.loadData();
         orderLatest = newsStorage.isOrderLatest();
 
-        articleDatas = newsStorage.loadArt1();
+        //articleDatas = newsStorage.loadArt1();
 
         if (articleDatas == null)
             articleDatas = new ArrayList<>();
@@ -674,7 +701,5 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
         else
             articleDatas = sorting.sortByOldest(articleDatas);
-
-        setupListView();
     }
 }

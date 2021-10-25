@@ -132,9 +132,11 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             stopBtn.setImageResource(starbigoff_);
 
 
-        newsStorage.loadData();
+        articleDatas = newsStorage.loadData();
 
-        articleDatas = newsStorage.loadArt1();
+
+
+        //articleDatas = newsStorage.loadArt1();
 
         if (articleDatas.isEmpty()) {
             articleDatas = new ArrayList<>();
