@@ -87,6 +87,7 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
         newsType = newsSectionStorage.getNewsSectionType();
         newsSectionURL = newsSectionStorage.getSectionURL();
+        newsStorage = new NewsStorage(this, newsType);
 
         updateList();
 
@@ -112,8 +113,17 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
     private void setupListView() {
 
-        listView = findViewById(R.id.news_list);
+        if (articleDatas == null)
+            articleDatas = new ArrayList<>();
+
+        if (articleDatas.isEmpty())
+            new GetContents(ArticleListingActivity.this).execute();
+
+        newsStorage.loadData();
         articleDatas = newsStorage.loadArt1();
+
+        listView = findViewById(R.id.news_list);
+
         articleListAdapter = new ArticleListAdapter(this, articleDatas);
         listView.setAdapter(articleListAdapter);
 
@@ -383,7 +393,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
 
             checkReadStuff();
             newsStorage.saveData(articleDatas);
-            setupListView();
 
             return null;
         }
@@ -393,7 +402,6 @@ public class ArticleListingActivity extends AppCompatActivity implements Seriali
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-
 
             //Display
             checkReadStuff();
