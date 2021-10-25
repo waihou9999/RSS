@@ -43,7 +43,7 @@ public class currentArticle extends storage {
         return sp.getString("lastURL", "");
     }
 
-    public boolean startTSS(){return sp.getBoolean("startTSS", true);}
+    public boolean startTSS(){return sp.getBoolean("startTSS", false);}
 
     public void setTTS(boolean tss){editor.putBoolean("startTSS", tss);}
 }
