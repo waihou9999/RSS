@@ -15,11 +15,22 @@ public class currentArticle extends storage {
         this.editor = sp.edit();
     }
 
-    public void saveReading(String wasReading, int index){
-        editor.putString("wasReading", wasReading);
-        editor.putInt("lastIndex3", index);
-
+    public void saveReading(boolean wasReading){
+        editor.putBoolean("wasReading", wasReading);
         editor.apply();
+    }
+
+    public void saveIndex(int index){
+        editor.putInt("index", index);
+        editor.apply();
+    }
+
+    public int loadIndex(){
+        return sp.getInt("index", 0);
+    }
+
+    public boolean loadReading(){
+        return sp.getBoolean("wasReading", false);
     }
 
     public void saveData(String link) {
@@ -30,7 +41,6 @@ public class currentArticle extends storage {
     public String loadData(){
         return sp.getString("lastURL", "");
     }
-
 
     public String loadNewsType(){
         return sp.getString("lastNewsType", "");
@@ -43,6 +53,10 @@ public class currentArticle extends storage {
     public void saveNewsSectionURL(String newsSection){
         editor.putString("lastURL", newsSection);
         editor.apply();
+    }
+
+    public String loadLastArticle(){
+            return sp.getString("lastURL", "");
     }
 
 

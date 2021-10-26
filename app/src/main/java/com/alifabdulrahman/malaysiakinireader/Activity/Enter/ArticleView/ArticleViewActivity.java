@@ -51,7 +51,6 @@ import java.util.Locale;
 public class ArticleViewActivity extends AppCompatActivity implements View.OnClickListener, AudioManager.OnAudioFocusChangeListener {
 
     private ArrayList<ArticleData> articleDatas;
-    //private ArrayList<ArticleData> articleDatas2;
     private TextToSpeech tts;
     private WebView mWebView;
     private String url, newsType;
@@ -61,16 +60,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
     private AudioManager audioManager;
     private boolean orderLatest;
     private SwipeRefreshLayout pullToRefresh2;
-    //ImageButton sharebutton;
-    //ImageButton reloadbutton;
-    //ImageButton rescrapebutton;
     int timex = 1000;
     int savedIndex;
     int savedReadIndex;
     int starbigoff_ = android.R.drawable.ic_media_play;
     int starbigon_ = android.R.drawable.ic_media_pause;
     boolean startTTS = false;
-    String wasReading = "";
     private NewsStorage newsStorage;
     private newsSectionStorage newsSectionStorage;
     private settings settings;
@@ -106,23 +101,18 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         rescrapebutton.setOnClickListener(this);
 
         //Get clicked article from NewsListing
-//        loadSettings();
-       // orderLatest = getIntent().getExtras().getBoolean("OrderLatest");
-       // newsType = getIntent().getExtras().getString("NewsType");
-        index = getIntent().getExtras().getInt("index");
-        //startTTS = getIntent().getExtras().getBoolean("startTTS");
 
 
 
-        //System.out.println("index is " + orderLatest + newsType + index);
-
+        newsSectionStorage = new newsSectionStorage(this);
+        currentArticle = new currentArticle(this);
 
         newsSectionStorage = new newsSectionStorage(this);
         newsType = newsSectionStorage.getNewsSectionType();
         settings = new settings(this);
-        currentArticle = new currentArticle(this);
         newsStorage = new NewsStorage(this, newsType);
         orderLatest = settings.loadSettings(newsType);
+        index = currentArticle.loadIndex();
 
         startTTS = currentArticle.startTSS();
 
@@ -150,13 +140,12 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
         savedIndex = index;
         savedReadIndex = readIndex;
 
-        wasReading = "yes";
-        currentArticle.saveReading(wasReading, index);
         //saveReading();
 
         //Get the url to display an set up webview
 
         //url = articleDatas.get(index).getLink();
+
         url = currentArticle.loadData();
 
 
@@ -180,7 +169,6 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onRefresh() {
                 mWebView.loadUrl(url);
-                System.out.println("webload1");
                 pullToRefresh2.setRefreshing(false);
             }
         });
@@ -319,9 +307,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onBackPressed() {
         finish();
-        wasReading = "no";
-        currentArticle.saveReading(wasReading, index);
-        //saveReading();
+        currentArticle.saveReading(false);
         saveData();
         super.onBackPressed();
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -648,8 +634,6 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 index++;
                 url = articleDatas.get(index).getLink();
                 articleDatas.get(index).setReadNews(true);
-                //saveReading();
-                currentArticle.saveReading(wasReading, index);
                 saveData();
                 readFreeOrPaid();
             }
@@ -665,7 +649,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 url = articleDatas.get(index).getLink();
                 articleDatas.get(index).setReadNews(true);
                 //saveReading();
-                currentArticle.saveReading(wasReading, index);
+
                 saveData();
                 readFreeOrPaid();
             }
@@ -796,53 +780,5 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
 
         editor.apply();
         //System.out.println(json);
-    }
-
-    /*
-    private void saveReading() {
-        SharedPreferences sp = getSharedPreferences("currentArticle", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-
-        editor.putString("wasReading", wasReading);
-        editor.putInt("lastIndex3", index);
-
-        editor.apply();
-    }
-
-     */
-
-    private void loadData(){
-        SharedPreferences sp = getSharedPreferences("NewsStorage", MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = sp.getString(newsType, null);
-        Type dataType = new TypeToken<ArrayList<ArticleData>>() {}.getType();
-        articleDatas = gson.fromJson(json, dataType);
-
-        //SharedPreferences sp = getSharedPreferences("startTTS", MODE_PRIVATE);
-        boolean yson = sp.getBoolean("startTTS", false);
-        startTTS = yson;
-
-        int zson = sp.getInt("starimage", starbigoff_);
-        stopBtn.setImageResource(zson);
-
-        if (articleDatas != null) {
-            if (!orderLatest) Collections.reverse(articleDatas);
-        }
-    }
-
-    private void loadReading() {
-        SharedPreferences sp = getSharedPreferences("currentArticle", MODE_PRIVATE);
-        String wasReading = sp.getString("wasReading", "no");
-        int lastIndex2 = sp.getInt("lastIndex2", 0);
-        String lastNewsType2 = sp.getString("lastNewsType2", "");
-        Boolean lastOrder2 = sp.getBoolean("lastOrder2", false);
-
-        if (wasReading.equals("yes")){
-            Intent toView = new Intent(ArticleViewActivity.this, ArticleViewActivity.class);
-            toView.putExtra("index", lastIndex2);
-            toView.putExtra("NewsType", lastNewsType2);
-            toView.putExtra("OrderLatest", lastOrder2);
-            startActivity(toView);
-        }
     }
 }

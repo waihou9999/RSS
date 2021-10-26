@@ -24,12 +24,15 @@ import java.util.ArrayList;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 
+import com.alifabdulrahman.malaysiakinireader.Activity.Enter.NewsSectionActivity;
 import com.alifabdulrahman.malaysiakinireader.Activity.MainActivity.sectionManager;
 import com.alifabdulrahman.malaysiakinireader.R;
 import com.alifabdulrahman.malaysiakinireader.model.NewsSource;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.NewsStorage;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.currentArticle;
 import com.alifabdulrahman.malaysiakinireader.storage.storage;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.currentArticle;
+import com.alifabdulrahman.malaysiakinireader.storage.substorage.newsSectionStorage;
 import com.alifabdulrahman.malaysiakinireader.storage.substorage.settings;
 import com.google.android.gms.common.util.ScopeUtil;
 
@@ -42,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
     private ListView lv;
     private AlertDialog.Builder dialog_builder;
     private AlertDialog.Builder startUp;
-    private String wasReading = "";
     private final sectionManager sectionManger = new sectionManager(this);
     private Intent intent = null;
     //private currentArticle currentArticle = new currentArticle(this);
@@ -118,49 +120,6 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         mainHandler.post(myRunnable);
     }
 
-    //Go to login
-    /*
-    public void toLogin(View view){
-
-        new AlertDialog.Builder(this).
-                setTitle("Login help")
-                .setMessage("To access RSS feeds that require logging into an on-site account, you may access the login page from within an article page of your selected news site.")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
-    public void toAbout(View view){
-
-        new AlertDialog.Builder(this).
-                setTitle("About")
-                .setMessage("RSS News Reader version 2021.03\n\n" +
-                        "by Alif Abdul Rahman and William Kang\n\n" +
-                        "Supervised by Dr Ian Chai")
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
-    }
-
-     */
-
-    /*
-        //Go to news section
-        public void toSection0(){
-            Intent toNewsSection = new Intent(MainActivity.this, NewsSectionActivity.class);
-            startActivity(toNewsSection);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-
-        public void toSection1(){
-            Intent toNewsSection1 = new Intent(MainActivity.this, NewsSectionActivity1.class);
-            startActivity(toNewsSection1);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-        public void toSection2(){
-            Intent toNewsSection2 = new Intent(MainActivity.this, NewsSectionActivity2.class);
-            startActivity(toNewsSection2);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        }
-    */
     @Override
     public void onBackPressed() {
         //Quit app
@@ -182,26 +141,13 @@ public class MainActivity extends AppCompatActivity implements Serializable {
         new settings(this).editFirstRun();
     }
 
-    /*
-        private void saveReading(String wasReading) {
-            new storage(this).saveReading(wasReading);
-        }
-    */
-    public void loadLastArticle() {
+    public void loadLastArticle(){
+        currentArticle currentArticle = new currentArticle(this);
 
-        currentArticle currentArticleStorage = new currentArticle(this);
-       // wasReading = currentArticle.loadLastArticle();
-        //System.out.println(wasReading);
-
-        if (!wasReading.equals("yes") || wasReading.equals(null)){
-
-        }
-
-        if (wasReading.equals("yes")) {
-            intent = sectionManger.section(0);
+        if (currentArticle.loadReading()){
+            Intent intent = new Intent(MainActivity.this, NewsSectionActivity.class);
             startActivity(intent);
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
-
     }
+
 }

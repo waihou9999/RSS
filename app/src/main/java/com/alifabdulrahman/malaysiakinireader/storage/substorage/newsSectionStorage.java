@@ -1,7 +1,6 @@
 package com.alifabdulrahman.malaysiakinireader.storage.substorage;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.alifabdulrahman.malaysiakinireader.model.NewsSectionData;
 import com.alifabdulrahman.malaysiakinireader.storage.storage;
@@ -44,24 +43,18 @@ public class newsSectionStorage extends storage {
         editor.apply();
     }
 
-    public void saveReading(String url, String newsType, String wasReading){
+    public void saveReading(String url, String newsType, boolean wasReading){
         editor.putString("sectionURL", url);
         editor.putString("sectionType", newsType);
-        editor.putString ("wasReading", wasReading);
-
-        //System.out.println("checking65" + sp.getString("sectionURL", ""));
+        editor.putBoolean("wasReading", wasReading);
     }
 
-    public void setReading(String wasReading){
-        editor.putString ("wasReading", wasReading);
+    public void setReading(boolean wasReading){
+        editor.putBoolean ("wasReading", wasReading);
     }
 
-    public void loadReading(){
-        String wasReading = sp.getString("wasReading", "");
-
-        if (wasReading.equals("yes")){
-            sectionManager.section(3);
-        }
+    public boolean loadReading(){
+        return sp.getBoolean("wasReading", false);
     }
 
     public String getSectionURL(){
