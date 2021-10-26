@@ -32,9 +32,6 @@ public class currentArticle extends storage {
     }
 
 
-    public String loadLastArticle(){return "no";}
-
-
     public String loadNewsType(){
         return sp.getString("lastNewsType", "");
     }
@@ -42,6 +39,12 @@ public class currentArticle extends storage {
     public String loadNewsSectionURL(){
         return sp.getString("lastURL", "");
     }
+
+    public void saveNewsSectionURL(String newsSection){
+        editor.putString("lastURL", newsSection);
+        editor.apply();
+    }
+
 
     public boolean startTSS(){return sp.getBoolean("startTSS", false);}
 

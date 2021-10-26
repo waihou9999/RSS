@@ -156,7 +156,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
 
         //Get the url to display an set up webview
 
-            //url = articleDatas.get(index).getLink();
+        //url = articleDatas.get(index).getLink();
         url = currentArticle.loadData();
 
 
@@ -670,6 +670,7 @@ public class ArticleViewActivity extends AppCompatActivity implements View.OnCli
                 readFreeOrPaid();
             }
         }
+        currentArticle.saveData(articleDatas.get(index).getLink());
     }
 
     //int oldsize = 0;
